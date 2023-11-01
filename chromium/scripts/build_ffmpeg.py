@@ -663,8 +663,8 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
   # Common configuration.  Note: --disable-everything does not in fact disable
   # everything, just non-library components such as decoders and demuxers.
   configure_flags['Common'].extend([
-      '--disable-everything',
-      '--disable-all',
+      #'--disable-everything',
+      #'--disable-all',
       '--disable-doc',
       '--disable-htmlpages',
       '--disable-manpages',
@@ -678,6 +678,11 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-rdft',
       '--enable-static',
       '--enable-libopus',
+      '--enable-cuda',
+      '--enable-cuvid',
+      '--enable-nvenc',
+      '--enable-dxva2',
+      '--enable-nonfree',
 
       # Disable features.
       '--disable-debug',
@@ -718,6 +723,8 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       # Force usage of nasm.
       '--x86asmexe=nasm',
   ])
+  print('kan kan ffmpeg')
+  print(configure_flags)
 
   if target_os == 'android':
     configure_flags['Common'].extend([
@@ -1030,6 +1037,11 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
     if options.brandings and branding not in options.brandings:
       print('%s skipped' % branding)
       return
+    print('ffmpeg-starting')
+    filename = 'ffmpeg_build_conf.txt'
+    content = configure_flags
+    #with open(filename,'w') as file:
+      #file.write(content)
 
     print('%s configure/build:' % branding)
     BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,

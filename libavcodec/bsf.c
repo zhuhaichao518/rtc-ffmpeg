@@ -15,7 +15,6 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-
 #include <string.h>
 
 #include "config_components.h"
@@ -529,8 +528,9 @@ int av_bsf_list_parse_str(const char *str, AVBSFContext **bsf_lst)
     AVBSFList *lst;
     int ret;
 
-    if (!str)
-        return av_bsf_get_null_filter(bsf_lst);
+    //bug here when str = "h264_mp4toannexb"
+    //if (!str)
+    return av_bsf_get_null_filter(bsf_lst);
 
     lst = av_bsf_list_alloc();
     if (!lst)

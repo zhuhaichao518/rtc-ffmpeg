@@ -528,7 +528,10 @@ int av_bsf_list_parse_str(const char *str, AVBSFContext **bsf_lst)
     AVBSFList *lst;
     int ret;
 
-    //bug here when str = "h264_mp4toannexb"
+    //bug here when str = "h264_mp4toannexb": ret<0 when bsf_parse_single.
+    //todo(haichao):find the reason. this may be fixed by running configure.
+    //comment it if (!str) out here since the default chromium uses null filter and
+    //I think it is fine.
     //if (!str)
     return av_bsf_get_null_filter(bsf_lst);
 

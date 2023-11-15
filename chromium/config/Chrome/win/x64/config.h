@@ -14,6 +14,7 @@
 #define BUILDSUF ""
 #define SLIBSUF ".dll"
 #define HAVE_MMX2 HAVE_MMXEXT
+#define DEBUG
 #define SWS_MAX_FILTER_SIZE 256
 #define ARCH_AARCH64 0
 #define ARCH_ALPHA 0
@@ -581,7 +582,7 @@
 #define CONFIG_CUDA 1
 #define CONFIG_CUDA_LLVM 1
 #define CONFIG_CUVID 1
-#define CONFIG_D3D11VA 0
+#define CONFIG_D3D11VA 1
 #define CONFIG_DXVA2 0
 #define CONFIG_FFNVCODEC 1
 #define CONFIG_NVDEC 1

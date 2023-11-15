@@ -223,13 +223,14 @@ static void dxva_list_guids_debug(AVCodecContext *avctx, void *service,
     for (i = 0; i < guid_count; i++) {
         const GUID *guid = &guid_list[i];
 
-        av_log(avctx, AV_LOG_VERBOSE,
+        /* av_log(
+            avctx, AV_LOG_VERBOSE,
              "{%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x}",
              (unsigned) guid->Data1, guid->Data2, guid->Data3,
              guid->Data4[0], guid->Data4[1],
              guid->Data4[2], guid->Data4[3],
              guid->Data4[4], guid->Data4[5],
-             guid->Data4[6], guid->Data4[7]);
+             guid->Data4[6], guid->Data4[7]);*/
 
 #if CONFIG_D3D11VA
         if (sctx->pix_fmt == AV_PIX_FMT_D3D11) {
@@ -238,7 +239,7 @@ static void dxva_list_guids_debug(AVCodecContext *avctx, void *service,
             // arbitrary upper bound (that could become outdated).
             for (format = 0; format < 200; format++) {
                 if (d3d11va_validate_output(service, *guid, &format))
-                    av_log(avctx, AV_LOG_VERBOSE, " %d", (int)format);
+                  av_logt(avctx, AV_LOG_VERBOSE, " %d", (int)format);
             }
         }
 #endif
@@ -253,7 +254,7 @@ static void dxva_list_guids_debug(AVCodecContext *avctx, void *service,
             }
         }
 #endif
-        av_log(avctx, AV_LOG_VERBOSE, "\n");
+        //av_log(avctx, AV_LOG_VERBOSE, "\n");
     }
 }
 
@@ -503,8 +504,10 @@ static int d3d11va_create_decoder(AVCodecContext *avctx)
     ret = dxva_get_decoder_guid(avctx, device_hwctx->video_device, &surface_format,
                                 guid_count, guid_list, &decoder_guid);
     av_free(guid_list);
-    if (ret < 0)
+    if (ret < 0) {
+        av_logt(avctx, AV_LOG_ERROR, "Failed dxva_get_decoder_guid");
         return AVERROR(EINVAL);
+    }
 
     desc.SampleWidth  = avctx->coded_width;
     desc.SampleHeight = avctx->coded_height;
@@ -512,12 +515,16 @@ static int d3d11va_create_decoder(AVCodecContext *avctx)
     desc.Guid         = decoder_guid;
 
     ret = d3d11va_get_decoder_configuration(avctx, device_hwctx->video_device, &desc, &config);
-    if (ret < 0)
+    if (ret < 0) {
+        av_logt(avctx, AV_LOG_ERROR, "Failed d3d11va_get_decoder_configuration");
         return AVERROR(EINVAL);
+    }
 
     sctx->d3d11_views = av_calloc(texdesc.ArraySize, sizeof(sctx->d3d11_views[0]));
-    if (!sctx->d3d11_views)
+    if (!sctx->d3d11_views) {
+        av_logt(avctx, AV_LOG_ERROR, "Failed d3d11_views");
         return AVERROR(ENOMEM);
+    }
     sctx->nb_d3d11_views = texdesc.ArraySize;
 
     for (i = 0; i < sctx->nb_d3d11_views; i++) {
@@ -549,9 +556,10 @@ static int d3d11va_create_decoder(AVCodecContext *avctx)
     sctx->d3d11_texture = frames_hwctx->texture;
 
     sctx->decoder_ref = bufref_wrap_interface((IUnknown *)sctx->d3d11_decoder);
-    if (!sctx->decoder_ref)
+    if (!sctx->decoder_ref) {
+        av_logt(avctx, AV_LOG_ERROR, "Failed to decoder_ref\n");
         return AVERROR(ENOMEM);
-
+    }
     return 0;
 }
 

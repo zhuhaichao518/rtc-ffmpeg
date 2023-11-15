@@ -239,6 +239,7 @@ typedef struct AVClass {
 #define av_log(...)
 #else
 void av_log(void *avcl, int level, const char *fmt, ...) av_printf_format(3, 4);
+void av_logt(void *avcl, int level, const char *fmt, ...) av_printf_format(3, 4);
 #endif
 
 /**
